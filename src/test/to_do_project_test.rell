@@ -1,0 +1,86 @@
+@test module;
+
+import main.*;
+import ^.test_operations.{ create_user };
+
+import lib.ft4.test.utils.{ ft_auth_operation_for };
+
+val alice = rell.test.pubkeys.alice;
+val bob = rell.test.pubkeys.bob;
+val task_id = rell.test.pubkeys.charlie;
+val alice_kp = rell.test.keypairs.alice;
+val bob_kp = rell.test.keypairs.bob;
+val task_id2 = rell.test.pubkeys.charlie;
+
+function test_create_entities() {
+    // Test the creation of user alice
+
+    rell.test.tx()
+        .op(create_user("Alice", alice))
+        .run();
+
+
+    // Check if alice is in my account
+
+    assert_equals(user @ { } ( @sum 1 ), 1);
+
+
+    // task creation by the users alice
+
+    rell.test.tx()
+        .op(ft_auth_operation_for(alice))// Auth operation
+        .op(create_task(alice, task_id, "task-title", "this is the task description", 3))
+        .sign(alice_kp)
+        .run();
+
+
+    // Check if the task is created
+
+    assert_equals(task @ { } ( @sum 1 ), 1);
+
+
+    // testing operation to updating the task
+
+    rell.test.tx()
+        .op(ft_auth_operation_for(alice))// Auth operation
+        .op(update_task(task_id, "updated-task", "this task is going to be updated", 5))// Argument removed
+        .sign(alice_kp)
+        .run();
+
+    assert_equals(task @ { task_id } ( .task_title ), "updated-task");
+
+
+
+     // testing the completed tasks
+
+    rell.test.tx()
+        .op(ft_auth_operation_for(alice))// Auth operation
+        .op(complete_task(task_id))// Argument removed
+        .sign(alice_kp)
+        .run();
+    assert_equals(task @ { task_id } ( .is_completed ), true);
+
+    // deleting a task 
+
+    rell.test.tx()
+        .op(ft_auth_operation_for(alice))// Auth operation
+        .op(delete_task(task_id))// Argument removed
+        .sign(alice_kp)
+        .run();
+    assert_equals(task @ { } ( @sum 1 ), 0);
+}
+
+// testing all queries
+
+function query_entities() {
+    rell.test.tx()
+        .op(ft_auth_operation_for(alice))// Auth operation
+        .op(create_task(alice, task_id, "abebe", "this is the task description", 3))
+        .op(create_task(bob, task_id2, "chala", "this is the task description", 2))
+        .sign(alice_kp)
+        .run();
+
+    val task_returned = get_user_tasks(task_id);
+    assert_equals(task_returned[0].task_title, "chala");
+    assert_equals(task_returned[1].task_title, "abebe");
+}

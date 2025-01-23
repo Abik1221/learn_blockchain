@@ -1,0 +1,35 @@
+// ferching all the tasks that are both completed and incompleted 
+
+query get_user_tasks(task_id: byte_array) {
+    val account = auth.authenticate();
+    return task @* { task_id } (
+        @sort_desc @omit task.due_date,
+        task_dto (
+            .task_id,
+            .task_title,
+            .task_description,
+            .due_date,
+            .is_completed,
+            .created_at,
+            .updated_at
+        )
+    );
+}
+
+//geting all the completed tasks by descending order
+
+query get_user_tasks_by_status(task_id: byte_array, is_completed: boolean) {
+    val account = auth.authenticate();
+    return task @* {
+        .task_id == task_id,
+        .is_completed == is_completed
+    } (
+        @sort_desc task.due_date,
+        .task_id,
+        .task_title,
+        .task_description,
+        .is_completed,
+        .created_at,
+        .updated_at
+    );
+}
