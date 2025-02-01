@@ -6,4 +6,4 @@ struct task_dto {
     is_completed: boolean;
     created_at: timestamp;
     updated_at: timestamp;
-} 
+}   
