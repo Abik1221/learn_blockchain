@@ -6,12 +6,13 @@ entity user {
 
 entity task {
     index user;
-    index task_id: byte_array;
+    key task_id: byte_array;
     mutable task_title: text;
     mutable task_description: text;
     key task_title, task_description;
-    mutable is_completed: boolean = false; // Status of the task
+    mutable is_completed: boolean = false;
     created_at: timestamp = op_context.last_block_time;
     mutable updated_at: timestamp = op_context.last_block_time;
-    mutable due_date: integer;
+    mutable due_date: timestamp; 
+    mutable to_date: timestamp = op_context.last_block_time;
 }

@@ -2,8 +2,8 @@ struct task_dto {
     task_id: byte_array;
     task_title: text;
     task_description: text;
+    due_date: timestamp;
     is_completed: boolean;
-    due_date: integer;
-    created_at: timestamp; // or created_at depending on how the task is timestamped
+    created_at: timestamp;
     updated_at: timestamp;
-}
+} 

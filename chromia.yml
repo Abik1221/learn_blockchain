@@ -1,7 +1,7 @@
-
 blockchains:
   to_do_project:
-    module: main
+    # webStatic: "../front_end/out" # this attribute 
+    module: main   
     moduleArgs:
       lib.ft4.core.auth:
         evm_signatures_authorized_operations:
@@ -25,3 +25,4 @@ libs:
     tagOrBranch: v1.0.0r
     rid: x"FA487D75E63B6B58381F8D71E0700E69BEDEAD3A57D1E6C1A9ABB149FAC9E65F"
     insecure: false
+  
