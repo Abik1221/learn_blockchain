@@ -4,6 +4,7 @@ entity user {
     key account;
 }
 
+
 entity task {
     index user;
     key task_id: byte_array;
